@@ -50,7 +50,6 @@ func (m *App) Builder() error {
 		var now = time.Now().Local()
 		var upath = systems.ReplaceSplit(fmt.Sprintf("%s%s", m.RootPath, m.UploadPath))
 		var dpath = systems.ReplaceSplit(fmt.Sprintf("%s%s", m.RootPath, m.DownloadPath))
-		fmt.Println(upath, dpath)
 		var name = ""
 		_, err = systems.MustOpen(name, upath)
 		Assert(err)
