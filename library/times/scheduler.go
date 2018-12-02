@@ -8,15 +8,15 @@ import (
 	"github.com/araddon/dateparse"
 )
 
-type Schedular struct {
+type Scheduler struct {
 	clauses map[string]interface{}
 	errs    map[string][]error
 }
 
-func New() *Schedular {
-	var schedular Schedular
-	schedular.clauses["retry"] = 10
-	return &schedular
+func New() *Scheduler {
+	var Scheduler Scheduler
+	Scheduler.clauses["retry"] = 10
+	return &Scheduler
 }
 
 func ParseAny(value string) {
@@ -24,7 +24,7 @@ func ParseAny(value string) {
 	fmt.Println(t, err)
 }
 
-func (s *Schedular) timeTypeConditioning(param string, value interface{}) *Schedular {
+func (s *Scheduler) timeTypeConditioning(param string, value interface{}) *Scheduler {
 	now := time.Now()
 	switch value.(type) {
 	case string:
@@ -43,7 +43,7 @@ func (s *Schedular) timeTypeConditioning(param string, value interface{}) *Sched
 	return s
 }
 
-func (s *Schedular) intervalTypeConditioning(value interface{}) *Schedular {
+func (s *Scheduler) intervalTypeConditioning(value interface{}) *Scheduler {
 	var interval time.Duration
 	switch value.(type) {
 	case string:
@@ -84,47 +84,47 @@ func (s *Schedular) intervalTypeConditioning(value interface{}) *Schedular {
 	return s
 }
 
-func (s *Schedular) timetableConditioning(value ...interface{}) *Schedular {
+func (s *Scheduler) timetableConditioning(value ...interface{}) *Scheduler {
 
 	return s
 }
 
-func (s *Schedular) Start(value interface{}) *Schedular {
+func (s *Scheduler) Start(value interface{}) *Scheduler {
 	s.timeTypeConditioning("start", value)
 	return s
 }
 
-func (s *Schedular) End(value interface{}) *Schedular {
+func (s *Scheduler) End(value interface{}) *Scheduler {
 	s.timeTypeConditioning("end", value)
 	return s
 }
 
-func (s *Schedular) Retry(count int) *Schedular {
+func (s *Scheduler) Retry(count int) *Scheduler {
 	s.clauses["retry"] = count
 	return s
 }
 
-func (s *Schedular) Interval(value interface{}) *Schedular {
+func (s *Scheduler) Interval(value interface{}) *Scheduler {
 	s.intervalTypeConditioning(value)
 	return s
 }
 
-func (s *Schedular) Function(f func(...interface{}) error) *Schedular {
+func (s *Scheduler) Function(f func(...interface{}) error) *Scheduler {
 	s.clauses["function"] = f
 	return s
 }
 
-func (s *Schedular) Params(params ...interface{}) *Schedular {
+func (s *Scheduler) Params(params ...interface{}) *Scheduler {
 	s.clauses["params"] = params
 	return s
 }
 
-func (s *Schedular) Timetable(tables ...interface{}) *Schedular {
+func (s *Scheduler) Timetable(tables ...interface{}) *Scheduler {
 	s.timetableConditioning(tables)
 	return s
 }
 
-func (s *Schedular) Excute() *Schedular {
+func (s *Scheduler) Excute() *Scheduler {
 	return s
 }
 
