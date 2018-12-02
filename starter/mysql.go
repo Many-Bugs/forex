@@ -7,3 +7,7 @@ type Mysql struct {
 	Port         int
 	DatabaseName string
 }
+
+func (m *Mysql) Builder() error {
+	return nil
+}

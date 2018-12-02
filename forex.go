@@ -1,6 +1,8 @@
 package main
 
-import "forex/starter"
+import (
+	"forex/starter"
+)
 
 func main() {
 	starter.Default()

@@ -8,6 +8,9 @@ type Content struct {
 	Server     Server
 	Mysql      Mysql
 	Mongo      Mongo
+	Influx     Influx
+	Redis      Redis
+	Crawler    Crawler
 }
 
 func Default() *Content {
@@ -17,7 +20,6 @@ func Default() *Content {
 	files.BindFileToObj(content.ConfigFile, content)
 	content.Builder(&content.App)
 	content.Builder(&content.Server)
-	
 
 	return content
 }

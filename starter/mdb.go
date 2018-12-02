@@ -7,3 +7,7 @@ type Mongo struct {
 	Port         int
 	DatabaseName string
 }
+
+func (m *Mongo) Builder() error {
+	return nil
+}

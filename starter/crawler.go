@@ -1,10 +1,10 @@
 package starter
 
-type Influx struct {
+type Crawler struct {
 	Mode      string
 	Frequency int
 }
 
-func (m *Influx) Builder() error {
+func (m *Crawler) Builder() error {
 	return nil
 }

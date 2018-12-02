@@ -1,10 +1,10 @@
 package starter
 
-type Influx struct {
+type Redis struct {
 	Mode      string
 	Frequency int
 }
 
-func (m *Influx) Builder() error {
+func (m *Redis) Builder() error {
 	return nil
 }
