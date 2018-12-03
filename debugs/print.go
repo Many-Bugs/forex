@@ -1,4 +1,4 @@
-package debugTool
+package debugs
 
 import (
 	"fmt"
