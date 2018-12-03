@@ -5,6 +5,10 @@ import (
 	"net"
 	"strconv"
 	"time"
+
+	ginSessions "github.com/gin-contrib/sessions"
+	ginCookie "github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -20,8 +24,11 @@ type Server struct {
 	TimeFormat       string
 	TimeZone         string
 	ServerExternalIP string
+	CookieKey        string
+	Engine           *gin.Engine
 }
 
+// TODO: Map to Domain, later regester
 func (m *Server) Builder() error {
 
 	ip, err := getLocalExternalIP()
@@ -45,6 +52,11 @@ func (m *Server) Builder() error {
 	} else {
 		time.Local = local
 	}
+
+	m.Engine = gin.New()
+	store := ginCookie.NewStore([]byte(m.CookieKey))
+	m.Engine.Use(ginSessions.Sessions("many_bugs_forex_session", store))
+
 	return nil
 }
 

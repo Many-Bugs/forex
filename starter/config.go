@@ -1,7 +1,7 @@
 package starter
 
 import (
-	"forex/debug"
+	"forex/debugs"
 	"forex/library/files"
 	"forex/systems"
 	"strconv"
@@ -19,8 +19,8 @@ func (m *Config) Builder() error {
 	files.BindFileToObj(m.File, m)
 	version, _ := systems.GetMinimumVersion(m.App.MinimumGoVersion)
 	if v, _ := systems.GetMinimumVersion(""); v <= version {
-		debug.DebuggingPrint(`[WARNING] Now require Go version ` + strconv.Itoa(int(v)) + ` or later. `)
+		debugs.DebuggingPrint(`[WARNING] Now require Go version ` + strconv.Itoa(int(v)) + ` or later. `)
 	}
-	debug.DebuggingPrint(`[WARNING] Building an Config instance. `)
+	debugs.DebuggingPrint(`[WARNING] Building an Config instance. `)
 	return nil
 }
