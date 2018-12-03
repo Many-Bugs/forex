@@ -1,7 +1,7 @@
 package starter
 
 import (
-	"fmt"
+	"forex/debugs"
 	"forex/library/files"
 )
 
@@ -25,8 +25,7 @@ func Default() *Content {
 	content.Builder(&content.App)
 	content.Builder(&content.Logger)
 	content.Builder(&content.Server)
-
-	fmt.Printf("%+v\n", content)
+	debugs.PrintStructureWithField(content)
 	return content
 }
 
