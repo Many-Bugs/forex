@@ -9,6 +9,6 @@ type Mysql struct {
 	IsWebService bool
 }
 
-func (m *Mysql) Builder() error {
+func (m *Mysql) Builder(c *Content) error {
 	return nil
 }

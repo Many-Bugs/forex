@@ -32,7 +32,7 @@ type App struct {
 	FileLocationShiftInterval int // Hourly
 }
 
-func (m *App) Builder() error {
+func (m *App) Builder(c *Content) error {
 	var start = []int{0, 0, 0, 0}
 	var routineFunc = func() error {
 		var err error

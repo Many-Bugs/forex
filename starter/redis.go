@@ -5,6 +5,6 @@ type Redis struct {
 	Frequency int
 }
 
-func (m *Redis) Builder() error {
+func (m *Redis) Builder(c *Content) error {
 	return nil
 }

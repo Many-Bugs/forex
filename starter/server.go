@@ -25,11 +25,12 @@ type Server struct {
 	TimeZone         string
 	ServerExternalIP string
 	CookieKey        string
+	SessionsKey      string
 	Engine           *gin.Engine
 }
 
 // TODO: Map to Domain, later regester
-func (m *Server) Builder() error {
+func (m *Server) Builder(c *Content) error {
 
 	ip, err := getLocalExternalIP()
 	if err != nil {

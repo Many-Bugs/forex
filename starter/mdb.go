@@ -9,6 +9,6 @@ type Mongo struct {
 	IsWebService bool
 }
 
-func (m *Mongo) Builder() error {
+func (m *Mongo) Builder(c *Content) error {
 	return nil
 }

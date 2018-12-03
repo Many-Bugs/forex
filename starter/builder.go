@@ -1,7 +1,7 @@
 package starter
 
 type Builder interface {
-	Builder() error
+	Builder(*Content) error
 }
 
 var (
