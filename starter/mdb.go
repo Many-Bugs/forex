@@ -6,6 +6,7 @@ type Mongo struct {
 	Host         string
 	Port         int
 	DatabaseName string
+	IsWebService bool
 }
 
 func (m *Mongo) Builder() error {

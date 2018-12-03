@@ -13,17 +13,6 @@ type App struct {
 	RootPath         string
 	MinimumGoVersion string
 
-	// log setting
-	LogDepth         int
-	LogSaveName      string
-	LogSavePath      string
-	LogFileExtension string
-
-	// server setting
-	ServerLogSavePath      string
-	ServerLogSaveName      string
-	ServerLogFileExtension string
-
 	FileEncryptKey string
 
 	// upload setting

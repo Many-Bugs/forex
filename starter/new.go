@@ -1,10 +1,13 @@
 package starter
 
-import "forex/library/files"
+import (
+	"forex/library/files"
+)
 
 type Content struct {
 	ConfigFile string
 	App        App
+	Logger     Logger
 	Server     Server
 	Mysql      Mysql
 	Mongo      Mongo
@@ -19,6 +22,7 @@ func Default() *Content {
 	}
 	files.BindFileToObj(content.ConfigFile, content)
 	content.Builder(&content.App)
+	content.Builder(&content.Logger)
 	content.Builder(&content.Server)
 
 	return content

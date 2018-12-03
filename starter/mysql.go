@@ -6,6 +6,7 @@ type Mysql struct {
 	Host         string
 	Port         int
 	DatabaseName string
+	IsWebService bool
 }
 
 func (m *Mysql) Builder() error {
