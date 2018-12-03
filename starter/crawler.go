@@ -5,6 +5,6 @@ type Crawler struct {
 	Frequency int
 }
 
-func (m *Crawler) Builder() error {
+func (m *Crawler) Builder(c *Content) error {
 	return nil
 }

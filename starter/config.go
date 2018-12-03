@@ -15,7 +15,7 @@ type Config struct {
 	Mongo  Mongo
 }
 
-func (m *Config) Builder() error {
+func (m *Config) Builder(c *Content) error {
 	files.BindFileToObj(m.File, m)
 	version, _ := systems.GetMinimumVersion(m.App.MinimumGoVersion)
 	if v, _ := systems.GetMinimumVersion(""); v <= version {

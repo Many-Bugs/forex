@@ -1,6 +1,7 @@
 package starter
 
 import (
+	"forex/debugs"
 	"forex/library/files"
 )
 
@@ -24,11 +25,11 @@ func Default() *Content {
 	content.Builder(&content.App)
 	content.Builder(&content.Logger)
 	content.Builder(&content.Server)
-
+	debugs.PrintStructureWithField(content)
 	return content
 }
 
 func (m *Content) Builder(b Builder) error {
-	b.Builder()
+	b.Builder(m)
 	return nil
 }

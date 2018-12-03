@@ -2,6 +2,7 @@ package starter
 
 import (
 	"errors"
+	"forex/api"
 	"net"
 	"strconv"
 	"time"
@@ -9,6 +10,7 @@ import (
 	ginSessions "github.com/gin-contrib/sessions"
 	ginCookie "github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/mattn/go-colorable"
 )
 
 var (
@@ -25,11 +27,12 @@ type Server struct {
 	TimeZone         string
 	ServerExternalIP string
 	CookieKey        string
+	SessionsKey      string
 	Engine           *gin.Engine
 }
 
 // TODO: Map to Domain, later regester
-func (m *Server) Builder() error {
+func (m *Server) Builder(c *Content) error {
 
 	ip, err := getLocalExternalIP()
 	if err != nil {
@@ -53,11 +56,24 @@ func (m *Server) Builder() error {
 		time.Local = local
 	}
 
-	m.Engine = gin.New()
-	store := ginCookie.NewStore([]byte(m.CookieKey))
-	m.Engine.Use(ginSessions.Sessions("many_bugs_forex_session", store))
+	m.newGinEngine(c)
 
 	return nil
+}
+
+func (m *Server) newGinEngine(c *Content) {
+	m.Engine = gin.New()
+	store := ginCookie.NewStore([]byte(m.CookieKey))
+	m.Engine.Use(ginSessions.Sessions(m.SessionsKey, store))
+
+	gin.DefaultWriter = c.Logger.HTTPMessagesFile
+	gin.DefaultErrorWriter = c.Logger.HTTPMessagesFile
+	gin.DefaultWriter = colorable.NewColorableStderr()
+	m.Engine.Use(gin.Logger())
+	m.Engine.Use(gin.Recovery())
+	m.Engine.Use(api.CORS())
+
+	gin.SetMode(c.Server.Mode)
 }
 
 func checkPortAvailable(port string) bool {

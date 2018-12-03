@@ -1,13 +1,47 @@
 package starter
 
+import (
+	"fmt"
+	"forex/systems"
+	"log"
+	"os"
+	"time"
+)
+
+type LogHierarchyOrder int
+
+const (
+	ALL LogHierarchyOrder = iota
+	TRACE
+	DEBUG
+	INFO
+	WARN
+	ERROR
+	FATAL
+	OFF
+)
+
 type Logger struct {
 	// log setting
-	LogDepth         int
+	LogDepth int
+	RootPath string
+
+	isLog            bool
 	LogSaveName      string
 	LogSavePath      string
 	LogFileExtension string
 
+	isHTTPMessageLog            bool
+	HTTPMessageLogSavePath      string
+	HTTPMessageLogSaveName      string
+	HTTPMessageLogFileExtension string
+
+	DefaultLoggingOrderTag []string
+
+	Prefix string
+
 	// server setting
+	isServerLog            bool
 	ServerLogSavePath      string
 	ServerLogSaveName      string
 	ServerLogFileExtension string
@@ -20,9 +54,61 @@ type Logger struct {
 	Host           string
 	Port           int
 	Domain         string
+
+	File             *os.File
+	ServerFile       *os.File
+	HTTPMessagesFile *os.File
+	Logger           *log.Logger
 }
 
-func (m *Logger) Builder() error {
+func (m *Logger) Builder(c *Content) error {
+
+	var err error
+
+	m.RootPath = systems.ReplaceSplit(c.App.RootPath)
+
+	if m.isLog {
+		m.LogSaveName = systems.ReplaceSplit(m.LogSaveName)
+		m.LogSavePath = systems.ReplaceSplit(m.LogSavePath)
+
+		m.File, err = systems.MustOpen(
+			fmt.Sprintf("%s%s.%s", m.LogSaveName, time.Now().Local().Format("2006-01-02 15:04:05"), m.LogFileExtension),
+			fmt.Sprintf("%s%s", m.RootPath, m.LogSavePath),
+		)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+
+	if m.isServerLog {
+		m.ServerLogSavePath = systems.ReplaceSplit(m.ServerLogSavePath)
+		m.ServerLogSaveName = systems.ReplaceSplit(m.ServerLogSaveName)
+
+		m.ServerFile, err = systems.MustOpen(
+			fmt.Sprintf("%s%s.%s", m.ServerLogSaveName, time.Now().Local().Format("2006-01-02 15:04:05"), m.ServerLogFileExtension),
+			fmt.Sprintf("%s%s", m.RootPath, m.ServerLogSavePath),
+		)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+
+	if m.isHTTPMessageLog {
+		m.HTTPMessageLogSavePath = systems.ReplaceSplit(m.HTTPMessageLogSavePath)
+		m.HTTPMessageLogSaveName = systems.ReplaceSplit(m.HTTPMessageLogSaveName)
+
+		m.HTTPMessagesFile, err = systems.MustOpen(
+			fmt.Sprintf("%s%s.%s", m.HTTPMessageLogSaveName, time.Now().Local().Format("2006-01-02 15:04:05"), m.HTTPMessageLogFileExtension),
+			fmt.Sprintf("%s%s", m.RootPath, m.HTTPMessageLogSavePath),
+		)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+
+	if m.isLog || m.isServerLog || m.isHTTPMessageLog {
+		m.Logger = log.New(m.File, m.Prefix, log.LstdFlags)
+	}
 
 	return nil
 }
