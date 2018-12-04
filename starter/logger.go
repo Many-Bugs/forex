@@ -23,33 +23,31 @@ const (
 
 type Logger struct {
 	// log setting
-	LogDepth int
-	RootPath string
-
-	isLog            bool
+	IsLog            bool
+	LogDepth         int
+	RootPath         string
 	LogSaveName      string
 	LogSavePath      string
 	LogFileExtension string
 
-	isHTTPMessageLog            bool
+	IsHTTPMessageLog            bool
 	HTTPMessageLogSavePath      string
 	HTTPMessageLogSaveName      string
 	HTTPMessageLogFileExtension string
-
-	DefaultLoggingOrderTag []string
+	DefaultLoggingOrderTag      []string
 
 	Prefix string
 
 	// server setting
-	isServerLog            bool
+	IsServerLog            bool
 	ServerLogSavePath      string
 	ServerLogSaveName      string
 	ServerLogFileExtension string
 
 	// web panel
-	isTerminal     bool
-	isWebPanel     bool
-	isSaveToMongo  bool
+	IsTerminal     bool
+	IsWebPanel     bool
+	IsSaveToMongo  bool
 	CollectionName string
 	Host           string
 	Port           int
@@ -67,7 +65,7 @@ func (m *Logger) Builder(c *Content) error {
 
 	m.RootPath = systems.ReplaceSplit(c.App.RootPath)
 
-	if m.isLog {
+	if m.IsLog {
 		m.LogSaveName = systems.ReplaceSplit(m.LogSaveName)
 		m.LogSavePath = systems.ReplaceSplit(m.LogSavePath)
 
@@ -80,7 +78,7 @@ func (m *Logger) Builder(c *Content) error {
 		}
 	}
 
-	if m.isServerLog {
+	if m.IsServerLog {
 		m.ServerLogSavePath = systems.ReplaceSplit(m.ServerLogSavePath)
 		m.ServerLogSaveName = systems.ReplaceSplit(m.ServerLogSaveName)
 
@@ -93,7 +91,7 @@ func (m *Logger) Builder(c *Content) error {
 		}
 	}
 
-	if m.isHTTPMessageLog {
+	if m.IsHTTPMessageLog {
 		m.HTTPMessageLogSavePath = systems.ReplaceSplit(m.HTTPMessageLogSavePath)
 		m.HTTPMessageLogSaveName = systems.ReplaceSplit(m.HTTPMessageLogSaveName)
 
@@ -106,7 +104,7 @@ func (m *Logger) Builder(c *Content) error {
 		}
 	}
 
-	if m.isLog || m.isServerLog || m.isHTTPMessageLog {
+	if m.IsLog || m.IsServerLog || m.IsHTTPMessageLog {
 		m.Logger = log.New(m.File, m.Prefix, log.LstdFlags)
 	}
 

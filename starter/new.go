@@ -18,13 +18,21 @@ type Content struct {
 }
 
 func Default() *Content {
+
 	content := &Content{
 		ConfigFile: "setting.ini",
 	}
 	files.BindFileToObj(content.ConfigFile, content)
+
 	content.Builder(&content.App)
 	content.Builder(&content.Logger)
 	content.Builder(&content.Server)
+	content.Builder(&content.Mysql)
+	content.Builder(&content.Mongo)
+	content.Builder(&content.Influx)
+	content.Builder(&content.Redis)
+	content.Builder(&content.Crawler)
+
 	debugs.PrintStructureWithField(content)
 	return content
 }
