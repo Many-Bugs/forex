@@ -11,7 +11,7 @@ func DebuggingPrint(header string, values ...interface{}) {
 	if !strings.HasSuffix(header, "\n") {
 		header += "\n"
 	}
-	fmt.Fprintf(os.Stderr, "[FOREX-debug] "+header, values...)
+	fmt.Fprintf(os.Stderr, "[Debug] "+header, values...)
 }
 
 func PrintStructureWithField(obj interface{}) {
