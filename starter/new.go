@@ -61,3 +61,7 @@ func (m *Content) Builder(b Builder) error {
 	b.Builder(m)
 	return nil
 }
+
+func (m *Content) Starter(s Starter) error {
+	return nil
+}

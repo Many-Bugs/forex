@@ -4,6 +4,10 @@ type Builder interface {
 	Builder(*Content) error
 }
 
+type Starter interface {
+	Starter(*Content) error
+}
+
 var (
 	_ Builder = &Config{}
 	_ Builder = &Logger{}
