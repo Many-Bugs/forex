@@ -20,6 +20,7 @@ var (
 )
 
 type Server struct {
+	Engine
 	Mode             string
 	IsPerfamceCheck  bool
 	Host             string
@@ -31,7 +32,6 @@ type Server struct {
 	ServerExternalIP string
 	CookieKey        string
 	SessionsKey      string
-	Engine           Engine
 }
 
 type Engine struct {

@@ -22,6 +22,7 @@ const (
 )
 
 type Logger struct {
+	LoggerInstance
 	// log setting
 	IsLog            bool
 	LogDepth         int
@@ -30,6 +31,7 @@ type Logger struct {
 	LogSavePath      string
 	LogFileExtension string
 
+	// HTTP traffic log
 	IsHTTPMessageLog            bool
 	HTTPMessageLogSavePath      string
 	HTTPMessageLogSaveName      string
@@ -52,7 +54,9 @@ type Logger struct {
 	Host           string
 	Port           int
 	Domain         string
+}
 
+type LoggerInstance struct {
 	File             *os.File
 	ServerFile       *os.File
 	HTTPMessagesFile *os.File
