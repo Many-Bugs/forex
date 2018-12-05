@@ -3,6 +3,19 @@ package starter
 import (
 	"forex/debugs"
 	"forex/library/files"
+	"forex/systems"
+)
+
+const (
+	INISetting  = "setting.ini"
+	JSONSetting = "setting.json"
+)
+
+var (
+	configFiles = []string{
+		INISetting,
+		JSONSetting,
+	}
 )
 
 type Content struct {
@@ -20,8 +33,14 @@ type Content struct {
 func Default() *Content {
 
 	content := &Content{
-		ConfigFile: "setting.ini",
+		ConfigFile: INISetting,
 	}
+	for i := 0; i < len(configFiles); i++ {
+		if !systems.CheckNotExist(configFiles[i]) {
+			content.ConfigFile = configFiles[i]
+		}
+	}
+
 	files.BindFileToObj(content.ConfigFile, content)
 
 	content.Builder(&content.App)
@@ -34,6 +53,7 @@ func Default() *Content {
 	content.Builder(&content.Crawler)
 
 	debugs.PrintStructureWithField(content)
+
 	return content
 }
 
