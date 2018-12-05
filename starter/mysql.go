@@ -6,6 +6,8 @@ import (
 	"forex/utils"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -37,11 +39,13 @@ type BasicModel struct {
 }
 
 func (m *Mysql) Builder(c *Content) error {
-	defer m.Connection()()
-	m.connectionsetting()
-	m.setCreateCallback()
-	m.setUpdateCallback()
-	m.setDeleteCallback()
+	if close := m.Connection(); close != nil {
+		m.connectionsetting()
+		m.setCreateCallback()
+		m.setUpdateCallback()
+		m.setDeleteCallback()
+		close()
+	}
 	return nil
 }
 
