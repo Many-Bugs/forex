@@ -2,15 +2,17 @@ package starter
 
 import (
 	"errors"
+	"fmt"
 	"forex/api"
 	"net"
+	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/gin-contrib/pprof"
 	ginSessions "github.com/gin-contrib/sessions"
 	ginCookie "github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
-	"github.com/mattn/go-colorable"
 )
 
 var (
@@ -18,7 +20,9 @@ var (
 )
 
 type Server struct {
+	Engine
 	Mode             string
+	IsPerfamceCheck  bool
 	Host             string
 	Port             int
 	Domain           string
@@ -28,7 +32,10 @@ type Server struct {
 	ServerExternalIP string
 	CookieKey        string
 	SessionsKey      string
-	Engine           *gin.Engine
+}
+
+type Engine struct {
+	*gin.Engine
 }
 
 // TODO: Map to Domain, later regester
@@ -61,19 +68,47 @@ func (m *Server) Builder(c *Content) error {
 	return nil
 }
 
-func (m *Server) newGinEngine(c *Content) {
-	m.Engine = gin.New()
-	store := ginCookie.NewStore([]byte(m.CookieKey))
-	m.Engine.Use(ginSessions.Sessions(m.SessionsKey, store))
+func (m *Server) ListenAndServe() {
+	server := &http.Server{
+		Addr:         fmt.Sprintf(":%d", m.Port),
+		Handler:      m.Engine,
+		ReadTimeout:  m.RequestTimeout,
+		WriteTimeout: m.RequestTimeout,
+	}
+	go server.ListenAndServe()
+}
 
+func (m *Server) SecurityListenAndServe() {
+
+}
+
+func (m *Server) newGinEngine(c *Content) {
+	m.Engine.Engine = gin.New()
+	m.useMiddlewares()
+	m.utilsServerSetting(c)
+}
+
+func (m *Server) utilsServerSetting(c *Content) {
+	m.perfomanceCheck()
 	gin.DefaultWriter = c.Logger.HTTPMessagesFile
 	gin.DefaultErrorWriter = c.Logger.HTTPMessagesFile
-	gin.DefaultWriter = colorable.NewColorableStderr()
-	m.Engine.Use(gin.Logger())
-	m.Engine.Use(gin.Recovery())
-	m.Engine.Use(api.CORS())
-
 	gin.SetMode(c.Server.Mode)
+}
+
+func (m *Server) perfomanceCheck() {
+	if m.IsPerfamceCheck {
+		pprof.Register(m.Engine.Engine, "debug/pprof")
+	}
+}
+
+func (m *Server) useMiddlewares() {
+	m.Engine.Use(
+		api.CORS(),
+		gin.Logger(),
+		gin.Recovery(),
+		ginSessions.Sessions(m.SessionsKey, ginCookie.NewStore([]byte(m.CookieKey))),
+	)
+	return
 }
 
 func checkPortAvailable(port string) bool {
