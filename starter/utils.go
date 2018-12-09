@@ -28,11 +28,3 @@ func RecursionCall(f func() error, count, duration int, done bool) bool {
 	}
 	return RecursionCall(f, count, duration, false)
 }
-
-func addSpace(value string) string {
-	if value == "" {
-		return value
-	} else {
-		return " " + value
-	}
-}

@@ -48,10 +48,10 @@ func Default() *Content {
 	content.Builder(&content.Logger)
 	content.Builder(&content.Server)
 	content.Builder(&content.Mysql)
+	content.Builder(&content.Influx)
 	content.Builder(&content.Redis)
 	content.Builder(&content.Postgres)
 	content.Builder(&content.Mongo)
-	content.Builder(&content.Influx)
 	content.Builder(&content.Crawler)
 
 	debugs.PrintStructureWithField(content)

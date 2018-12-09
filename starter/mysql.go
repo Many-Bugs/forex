@@ -47,11 +47,11 @@ type MysqlModel struct {
 func (m *Mysql) Builder(c *Content) error {
 	m.CreateDatabase()
 	if close := m.Connector(); close != nil {
+		defer close()
 		m.connectionSetting()
 		m.setCreateCallback()
 		m.setUpdateCallback()
 		m.setDeleteCallback()
-		close()
 	}
 	return nil
 }
@@ -121,19 +121,19 @@ func (m *Mysql) setDeleteCallback() {
 			}
 			if deletedOnField, hasDeletedOnField := scope.FieldByName("DeletedTime"); !scope.Search.Unscoped && hasDeletedOnField {
 				scope.Raw(fmt.Sprintf(
-					"UPDATE %v SET %v=%v%v%v",
+					"UPDATE %v SET %v=%v %v %v",
 					scope.QuotedTableName(),
 					scope.Quote(deletedOnField.DBName),
 					scope.AddToVars(time.Now().Unix()),
-					addSpace(scope.CombinedConditionSql()),
-					addSpace(extraOption),
+					scope.CombinedConditionSql(),
+					extraOption,
 				)).Exec()
 			} else {
 				scope.Raw(fmt.Sprintf(
-					"DELETE FROM %v%v%v",
+					"DELETE FROM %v %v %v",
 					scope.QuotedTableName(),
-					addSpace(scope.CombinedConditionSql()),
-					addSpace(extraOption),
+					scope.CombinedConditionSql(),
+					extraOption,
 				)).Exec()
 			}
 		}
@@ -176,7 +176,6 @@ func (m *Mysql) recursionCall(f func() error, count, duration int, done bool) bo
 	}
 	return m.recursionCall(f, count, duration, false)
 }
-
 
 func (m *Mysql) AutoMigrateAddr(obj interface{}) {
 	m.ModelAddrs = append(m.ModelAddrs, obj)
