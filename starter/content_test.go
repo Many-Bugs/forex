@@ -28,30 +28,7 @@ func TestGetFieldStructPointer(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c.GetFieldStructPointer(tt.args.name)
-		})
-	}
-}
-
-func TestInspectStruct(t *testing.T) {
-	type args struct {
-		o interface{}
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		// TODO: Add test cases.
-		{
-			name: "A",
-			args: args{
-				o: &Content{},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			InspectStruct(tt.args.o)
+			c.GetFieldOfStructPointer(tt.args.name)
 		})
 	}
 }

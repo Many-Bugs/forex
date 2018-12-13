@@ -177,9 +177,12 @@ func (m *Mysql) recursionCall(f func() error, count, duration int, done bool) bo
 	return m.recursionCall(f, count, duration, false)
 }
 
-func (m *Mysql) AutoMigrateAddr(obj interface{}) {
+func (m *Mysql) AutoMigrateByAddr(obj interface{}) {
 	m.ModelAddrs = append(m.ModelAddrs, obj)
-
+	for _, model := range m.ModelAddrs {
+		defer m.Connector()()
+		m.DB.AutoMigrate(model)
+	}
 	return
 }
 

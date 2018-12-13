@@ -8,9 +8,11 @@ import (
 )
 
 type App struct {
+	ModuleName   string
+	ModuleID     int
+	InUseService []string
+
 	// basic setting
-	InUseService     []string
-	ModuleID         int
 	RootPath         string
 	MinimumGoVersion string
 
@@ -63,5 +65,5 @@ func (m *App) Starter(c *Content) error {
 }
 
 func (m *App) Router(s *Server) {
-	
+
 }

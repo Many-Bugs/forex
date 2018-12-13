@@ -6,7 +6,7 @@ import (
 	"forex/api"
 	"net"
 	"net/http"
-	"reflect"
+	"os"
 	"strconv"
 	"time"
 
@@ -23,6 +23,8 @@ var (
 type Server struct {
 	Engine
 	Mode             string
+	TLSCert          string
+	IsNoCert         bool
 	IsPerfamceCheck  bool
 	Host             string
 	Port             int
@@ -160,6 +162,9 @@ func getLocalExternalIP() (string, error) {
 }
 
 func (m *Server) Starter(c *Content) error {
+	if m.IsNoCert {
+		m.StartNoCert()
+	}
 	return nil
 }
 
@@ -167,8 +172,19 @@ func (m *Server) Router(r Router) {
 	m.Router(r)
 }
 
-func (m *Server) DefaultHandlerFuncsOfModel(obj interface{}) {
-	name := reflect.TypeOf(obj).Elem().Name()
+func (m *Server) StartNoCert() {
 
-	m.Engine.Any(fmt.Sprintf("/%s", name), nil, nil)
+	fmt.Fprintf(os.Stderr, "--- Started [:%d] ---\n", m.Port)
+
+	server := &http.Server{
+		Addr:         fmt.Sprintf(":%d", m.Port),
+		Handler:      m.Engine,
+		ReadTimeout:  m.RequestTimeout,
+		WriteTimeout: m.RequestTimeout,
+	}
+
+	err := server.ListenAndServe()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error = %s\n", err.Error())
+	}
 }

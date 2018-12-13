@@ -14,14 +14,9 @@ type Content struct {
 	Mongo      Mongo
 	Influx     Influx
 	Redis      Redis
-	Crawler    Crawler
 }
 
-func New() *Content {
-	return &Content{}
-}
-
-func (m *Content) GetFieldStructPointer(name string) Builder {
+func (m *Content) GetFieldOfStructPointer(name string) Builder {
 	val := reflect.Indirect(reflect.ValueOf(m))
 	for i := 0; i < val.NumField(); i++ {
 		if val.Field(i).Type().Name() == name {
