@@ -6,6 +6,7 @@ import (
 	"forex/api"
 	"net"
 	"net/http"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -36,6 +37,7 @@ type Server struct {
 
 type Engine struct {
 	*gin.Engine
+	HandlersFuncs []gin.HandlerFunc
 }
 
 // TODO: Map to Domain, later regester
@@ -155,4 +157,18 @@ func getLocalExternalIP() (string, error) {
 		}
 	}
 	return "", errInternetConnection
+}
+
+func (m *Server) Starter(c *Content) error {
+	return nil
+}
+
+func (m *Server) Router(r Router) {
+	m.Router(r)
+}
+
+func (m *Server) DefaultHandlerFuncsOfModel(obj interface{}) {
+	name := reflect.TypeOf(obj).Elem().Name()
+
+	m.Engine.Any(fmt.Sprintf("/%s", name), nil, nil)
 }

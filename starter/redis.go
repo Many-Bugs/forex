@@ -34,6 +34,10 @@ func (m *Redis) Builder(c *Content) error {
 	return nil
 }
 
+func (m *Redis) Starter(c *Content) error {
+	return nil
+}
+
 func (m *Redis) setRedisPool() (err error) {
 	m.RedisPool = &redis.Pool{
 		MaxIdle:         m.MaximumIdleConnection,

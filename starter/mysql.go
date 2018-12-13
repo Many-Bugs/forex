@@ -187,3 +187,11 @@ func (m *Mysql) New() {
 	m.ModelAddrs = make([]interface{}, 0)
 	return
 }
+
+func (m *Mysql) Starter(c *Content) error {
+	return nil
+}
+
+func (m *Mysql) Router(s *Server) {
+	return
+}

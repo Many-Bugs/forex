@@ -74,7 +74,6 @@ func (m *Postgres) CreateDatabase() {
 	_, _ = m.db.Exec(stmt)
 	stmt = fmt.Sprintf(
 		"ALTER DATABASE %s "+
-			"IF NOT EXISTS %s "+
 			"WITH ENCODING='UTF8' "+
 			"TABLESPACE = pg_default;",
 		m.DatabaseName)

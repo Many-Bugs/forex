@@ -1,7 +1,7 @@
 package starter
 
 import (
-	"forex/debugs"
+	"forex/library/debugs"
 	"forex/library/files"
 	"forex/systems"
 	"strconv"
@@ -23,4 +23,12 @@ func (m *Config) Builder(c *Content) error {
 	}
 	debugs.DebuggingPrint(`[WARNING] Building an Config instance. `)
 	return nil
+}
+
+func (m *Config) Starter(c *Content) error {
+	return nil
+}
+
+func (m *Config) Router(s *Server) {
+
 }

@@ -83,3 +83,11 @@ func (m *Influx) recursionCall(f func() error, count, duration int, done bool) b
 	}
 	return m.recursionCall(f, count, duration, false)
 }
+
+func (m *Influx) Starter(c *Content) error {
+	return nil
+}
+
+func (m *Influx) Router(s *Server) {
+
+}
