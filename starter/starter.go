@@ -13,8 +13,11 @@ var (
 	_ Starter = &Mongo{}
 	_ Starter = &Influx{}
 	_ Starter = &Redis{}
-	_ Starter = &Crawler{}
 )
+
+func (m *Content) DefaultStarter() {
+
+}
 
 func (m *Content) Starter(s Starter) error {
 	return nil

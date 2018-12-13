@@ -11,5 +11,4 @@ var (
 	_ Router = &Mysql{}
 	_ Router = &Mongo{}
 	_ Router = &Influx{}
-	_ Router = &Crawler{}
 )

@@ -120,6 +120,9 @@ func (m *Logger) Starter(c *Content) error {
 }
 
 func (m *Logger) Router(s *Server) {
-	
+
 }
 
+func (m *Logger) ToJSONFile(obj interface{}) {
+	
+}
