@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	starter.Default()
+	starter.DefaultBuilder()
 }

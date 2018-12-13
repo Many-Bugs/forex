@@ -114,3 +114,12 @@ func (m *Logger) Builder(c *Content) error {
 
 	return nil
 }
+
+func (m *Logger) Starter(c *Content) error {
+	return nil
+}
+
+func (m *Logger) Router(s *Server) {
+	
+}
+

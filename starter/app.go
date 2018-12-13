@@ -9,6 +9,7 @@ import (
 
 type App struct {
 	// basic setting
+	InUseService     []string
 	ModuleID         int
 	RootPath         string
 	MinimumGoVersion string
@@ -55,4 +56,12 @@ func (m *App) Builder(c *Content) error {
 	go times.Routine(start, 10, 24, routineFunc)
 
 	return nil
+}
+
+func (m *App) Starter(c *Content) error {
+	return nil
+}
+
+func (m *App) Router(s *Server) {
+	
 }

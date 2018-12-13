@@ -8,14 +8,14 @@ import (
 	"strconv"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/lib/pq"
 
 	"github.com/jinzhu/gorm"
 )
 
-type Mysql struct {
-	MysqlInstance
+type Postgres struct {
+	PostgresInstance
 	Username                       string
 	Password                       string
 	Host                           string
@@ -30,21 +30,21 @@ type Mysql struct {
 	MaximumConnectionKeepAliveTime int
 }
 
-type MysqlInstance struct {
+type PostgresInstance struct {
 	DB         *gorm.DB
 	db         *sql.DB
-	BasicModel MysqlModel
+	BasicModel PostgresModel
 	ModelAddrs []interface{}
 }
 
-type MysqlModel struct {
+type PostgresModel struct {
 	ID          int `gorm:"primary_key" json:"id"`
 	CreatedTime int `json:"created_time"`
 	EditedTime  int `json:"edited_time"`
 	DeletedTime int `json:"deleted_time"`
 }
 
-func (m *Mysql) Builder(c *Content) error {
+func (m *Postgres) Builder(c *Content) error {
 	m.CreateDatabase()
 	if close := m.Connector(); close != nil {
 		defer close()
@@ -56,35 +56,37 @@ func (m *Mysql) Builder(c *Content) error {
 	return nil
 }
 
-func (m *Mysql) CreateDatabase() {
-	m.db, _ = sql.Open(
-		"mysql",
-		fmt.Sprintf("%s:%s@tcp(%s:%d)/",
-			m.Username,
-			m.Password,
+func (m *Postgres) CreateDatabase() {
+	m.db, m.Error = sql.Open("postgres",
+		fmt.Sprintf(
+			"host=%s port=%s user=%s password=%s",
 			m.Host,
-			m.Port),
+			strconv.Itoa(m.Port),
+			m.Username,
+			m.Password),
 	)
 	stmt := fmt.Sprintf(
 		"CREATE DATABASE "+
 			"IF NOT EXISTS %s "+
-			"CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;",
+			"WITH ENCODING='UTF8' "+
+			"TABLESPACE = pg_default;",
 		m.DatabaseName)
 	_, _ = m.db.Exec(stmt)
 	stmt = fmt.Sprintf(
 		"ALTER DATABASE %s "+
-			"CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;",
+			"WITH ENCODING='UTF8' "+
+			"TABLESPACE = pg_default;",
 		m.DatabaseName)
 	_, _ = m.db.Exec(stmt)
 }
 
-func (m *Mysql) connectionSetting() {
+func (m *Postgres) connectionSetting() {
 	m.DB.DB().SetMaxIdleConns(m.MaximumIdleConnection)
 	m.DB.DB().SetMaxOpenConns(m.MaximumOpenConnection)
 	m.DB.DB().SetConnMaxLifetime(time.Duration(m.MaximumConnectionKeepAliveTime))
 }
 
-func (m *Mysql) setCreateCallback() {
+func (m *Postgres) setCreateCallback() {
 	m.DB.Callback().Create().Replace("gorm:update_time_stamp", func(scope *gorm.Scope) {
 		if !scope.HasError() {
 			now := systems.NowInUNIX()
@@ -103,7 +105,7 @@ func (m *Mysql) setCreateCallback() {
 	return
 }
 
-func (m *Mysql) setUpdateCallback() {
+func (m *Postgres) setUpdateCallback() {
 	m.DB.Callback().Update().Replace("gorm:update_time_stamp", func(scope *gorm.Scope) {
 		if _, ok := scope.Get("gorm:update_column"); !ok {
 			scope.SetColumn("EditedTime", systems.NowInUNIX())
@@ -112,7 +114,7 @@ func (m *Mysql) setUpdateCallback() {
 	return
 }
 
-func (m *Mysql) setDeleteCallback() {
+func (m *Postgres) setDeleteCallback() {
 	m.DB.Callback().Delete().Replace("gorm:delete", func(scope *gorm.Scope) {
 		if !scope.HasError() {
 			var extraOption string
@@ -141,16 +143,17 @@ func (m *Mysql) setDeleteCallback() {
 	return
 }
 
-func (m *Mysql) Connector() func() error {
+func (m *Postgres) Connector() func() error {
 	m.recursionCall(
 		func() error {
-			m.DB, m.Error = gorm.Open("mysql",
+			m.DB, m.Error = gorm.Open("postgres",
 				fmt.Sprintf(
-					"%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+					"host=%s port=%s user=%s dbname=%s password=%s",
+					m.Host,
+					strconv.Itoa(m.Port),
 					m.Username,
-					m.Password,
-					m.Host+":"+strconv.Itoa(m.Port),
-					m.DatabaseName))
+					m.DatabaseName,
+					m.Password))
 			return m.Error
 		},
 		m.MaximumConnectionRetry,
@@ -162,7 +165,7 @@ func (m *Mysql) Connector() func() error {
 	return nil
 }
 
-func (m *Mysql) recursionCall(f func() error, count, duration int, done bool) bool {
+func (m *Postgres) recursionCall(f func() error, count, duration int, done bool) bool {
 	if !done {
 		m.Error = f()
 		count--
@@ -175,23 +178,4 @@ func (m *Mysql) recursionCall(f func() error, count, duration int, done bool) bo
 		time.Sleep(time.Duration(duration) * time.Second)
 	}
 	return m.recursionCall(f, count, duration, false)
-}
-
-func (m *Mysql) AutoMigrateAddr(obj interface{}) {
-	m.ModelAddrs = append(m.ModelAddrs, obj)
-
-	return
-}
-
-func (m *Mysql) New() {
-	m.ModelAddrs = make([]interface{}, 0)
-	return
-}
-
-func (m *Mysql) Starter(c *Content) error {
-	return nil
-}
-
-func (m *Mysql) Router(s *Server) {
-	return
 }

@@ -12,3 +12,11 @@ type Mongo struct {
 func (m *Mongo) Builder(c *Content) error {
 	return nil
 }
+
+func (m *Mongo) Starter(c *Content) error {
+	return nil
+}
+
+func (m *Mongo) Router(s *Server) {
+	
+}
